@@ -135,6 +135,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 //
 
+HWND drawWnd;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -145,7 +146,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
 
-
+        drawWnd = FindWindowW(NULL, L"Week12_Task");
+        if (drawWnd == NULL) {
+            MessageBox(hWnd, L"그리는 화면 못 찾았음", L"???", MB_OK);
+        }
 
         break;
 
