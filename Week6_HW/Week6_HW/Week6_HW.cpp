@@ -14,7 +14,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름�
 //WinProc에 필요한 전역 변수
 bool leftBtn = false;                               //마우스 왼쪽 버튼이 눌렸는지
 int g_x, g_y;                                           //마우스의 이전 좌표를 저장하는 변수
-int g_drawType = 0;                              //그리기 모드를 설정하는 변수 (기본 : 직선모드)
+int g_drawType = MODE_STRAIGHT;                              //그리기 모드를 설정하는 변수 (기본 : 직선모드)
 
 HDC hdc;                                                //Device Context를 핸들링하는 변수
 
@@ -168,9 +168,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         g_x = x;
         g_y = y;
 
-        if (0 == g_drawType) {
+        if (g_drawType == MODE_STRAIGHT) {
             MoveToEx(hdc, g_x, g_y, NULL);
         }
+        PostMessageW(drawWnd, WM_LBUTTONDOWN, wParam, lParam);
 
         break;
 
@@ -186,6 +187,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 
         }
+
+        PostMessageW(drawWnd, WM_MOUSEMOVE, wParam, lParam);
         break;
 
     case WM_LBUTTONUP:
@@ -206,7 +209,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         DeleteObject(myBrush);
 
         ReleaseDC(hWnd, hdc);
-
+        PostMessageW(drawWnd, WM_LBUTTONUP, wParam, lParam);
     	break;
 
     case WM_COMMAND:
@@ -219,63 +222,77 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case MODE_STRAIGHT:
             //직선 그리기
             g_drawType = MODE_STRAIGHT;
+            SendMessageW(drawWnd, WM_USER + 1, wParam, MODE_STRAIGHT);
             break;
 
         case MODE_RECT:
             //사각형 그리기
             g_drawType = MODE_RECT;
+            SendMessageW(drawWnd, WM_USER + 1, wParam, MODE_RECT);
             break;
 
         case MODE_ELLIPSE:
             //타원 그리기
             g_drawType = MODE_ELLIPSE;
+            SendMessageW(drawWnd, WM_USER + 1, wParam, MODE_ELLIPSE);
             break;
 
         case MODE_FREE:
             //자유선 그리기
             g_drawType = MODE_FREE;
+            SendMessageW(drawWnd, WM_USER + 1, wParam, MODE_FREE);
             break;
 
         // ----------- 면색 선택 -----------
         case FACE_WHITE :
             faceColor = WHITE;
+            SendMessageW(drawWnd, WM_USER + 2, wParam, FACE_WHITE);
             break;
 
         case FACE_BLACK:
             faceColor = BLACK;
+            SendMessageW(drawWnd, WM_USER + 2, wParam, FACE_BLACK);
             break;
 
         case FACE_RED:
             faceColor = RED;
+            SendMessageW(drawWnd, WM_USER + 2, wParam, FACE_RED);
             break;
 
         case FACE_BLUE:
             faceColor = BLUE;
+            SendMessageW(drawWnd, WM_USER + 2, wParam, FACE_BLUE);
             break;
 
         case FACE_GREEN:
             faceColor = GREEN;
+            SendMessageW(drawWnd, WM_USER + 2, wParam, FACE_GREEN);
             break;
 
         // ----------- 선색 선택 -----------
         case LINE_BLACK:
             lineColor = BLACK;
+            SendMessageW(drawWnd, WM_USER + 3, wParam, LINE_BLACK);
             break;
 
         case LINE_RED:
             lineColor = RED;
+            SendMessageW(drawWnd, WM_USER + 3, wParam, LINE_RED);
             break;
 
         case LINE_BLUE:
             lineColor = BLUE;
+            SendMessageW(drawWnd, WM_USER + 3, wParam, LINE_BLUE);
             break;
 
         case LINE_GREEN:
             lineColor = GREEN;
+            SendMessageW(drawWnd, WM_USER + 3, wParam, LINE_GREEN);
             break;
 
         case LINE_SKYBLUE:
             lineColor = SKYBLUE;
+            SendMessageW(drawWnd, WM_USER + 3, wParam, LINE_SKYBLUE);
             break;
 
         case IDM_ABOUT:
